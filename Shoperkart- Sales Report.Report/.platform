@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Shoperkart- Sales Report"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "eee9207b-637d-4809-be5d-7d07f5590b40"
+  }
+}
