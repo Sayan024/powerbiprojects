@@ -22,10 +22,3 @@ Select a branch from the list below (or use the branch dropdown selector in the 
 * **Branch:** [VoltSalesDashboard](https://github.com/Sayan024/powerbiprojects/tree/VoltSalesDashboard)
 * **Highlights:** Product return metrics tracking refund volumes, new vs returning customer cohorts, and logistics delays audits.
 
----
-
-## 🛠️ Global Repository Optimizations
-All dashboard branches in this repository have been optimized:
-1. **Relative Local Data Sources:** Cleaned and remapped all semantic models to read from relative project folders (using extracted dataset caches).
-2. **VertiPaq Engine Cleanup:** Scanned and removed 31 unused DAX measures across all models to optimize query caching and performance.
-3. **Master Gitignore:** Configured to exclude user settings, session files, and temp caches (`cache.abf`).
