@@ -1,14 +1,2 @@
-# Exclude Power BI local user settings and cache files
-**/[Cc]ache.abf
-**/.pbi/
-**/[Ss]ecurity[Bb]indings
-**/.platform
-**/*.user
-**/[Cc]onnections
-**/*.log
-
-# Operating System files
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-.DS_Store
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
