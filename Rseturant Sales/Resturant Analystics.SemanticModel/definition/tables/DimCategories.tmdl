@@ -1,0 +1,42 @@
+table DimCategories
+	lineageTag: 585cb6d6-3f2e-42cf-8168-cd66934a61cf
+
+	column 'Category '
+		dataType: string
+		lineageTag: c6e36b29-ac0f-43be-8555-b9b704f0e6d2
+		summarizeBy: none
+		sourceColumn: "Category "
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Description '
+		dataType: string
+		lineageTag: d26661f7-48bd-45c3-a549-3e1aaee09b2d
+		summarizeBy: none
+		sourceColumn: "Description "
+
+		annotation SummarizationSetBy = Automatic
+
+	column ImgUrl
+		dataType: string
+		lineageTag: 77bb36da-80bd-4225-80d2-b843da85a2a5
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: ImgUrl
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimCategories = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Practise Coding Files\powerbi\dashboards\Rseturant Sales\food_categories.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Category ", type text}, {"Description ", type text}, {"ImgUrl", type text}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,232 @@
+table _Measures
+	lineageTag: ffe9f67c-e5fe-471c-af2f-89da4e3646de
+
+	measure 'Units YTD' = ```
+			
+			    TOTALYTD ( [Units], DimDate[Date] )
+			```
+		formatString: 0
+		lineageTag: 1d8be16d-6058-4522-ba76-62726a732c11
+
+	measure Units = ```
+			
+			    SUM ( FactSales[Quantity] )
+			```
+		formatString: 0
+		lineageTag: 1794a6e6-de18-40dd-ae1f-511735eeb8f1
+
+	measure 'Revenue YTD' = ```
+			
+			    TOTALYTD ( [Revenue], DimDate[Date] )
+			```
+		lineageTag: db21e8bc-b286-4e02-bf9a-7009c6e0d02f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue YoY Δ' = ```
+			
+			    [Revenue] - [Revenue LY]
+			```
+		lineageTag: 8840b937-9a16-4d48-ab8f-c96daa72348f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue Var vs Target YTD' = ```
+			
+			    [Revenue YTD] - [Target YTD]
+			```
+		lineageTag: 79623198-4ad3-4884-9893-567cfc710972
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue Var vs Target QTD' = ```
+			
+			    [Revenue QTD] - [Target QTD]
+			```
+		lineageTag: 66a0dcef-fbbf-48c9-8083-7cb353661e6d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue Var vs Target MTD' = ```
+			
+			    [Revenue MTD] - [Target MTD]
+			```
+		lineageTag: 7eda1bac-020e-48c5-aae3-ebe80423bb69
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue Var vs Target' = ```
+			
+			    [Revenue] - FactTargets[Target]
+			```
+		lineageTag: 096b1fd8-18c3-4609-b5fa-eccd61578390
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue Var % vs Target' = ```
+			
+			    DIVIDE ( [Revenue Var vs Target], FactTargets[Target] )
+			```
+		lineageTag: 6941ab80-e776-4aae-b964-e1c17b606cb5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue QTD' = ```
+			
+			    TOTALQTD ( [Revenue], DimDate[Date] )
+			```
+		lineageTag: 0051d37f-7d05-490e-9ca1-e7e91ecdff76
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue PM' = ```
+			
+			    CALCULATE ( [Revenue], PARALLELPERIOD ( DimDate[Date], -1, MONTH ) )
+			```
+		lineageTag: 7143aaa3-cd04-477d-81e8-6626c5f2d318
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue MTD' = ```
+			
+			    TOTALMTD ( [Revenue], DimDate[Date] )
+			```
+		lineageTag: ab91cd9a-f2c8-4615-8367-0e91477262ae
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue MoM Δ' = ```
+			
+			    [Revenue] - [Revenue PM]
+			```
+		lineageTag: 4cedf59e-62e5-4052-868e-d3b3267b580f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue LY' = ```
+			
+			    CALCULATE ( [Revenue], DATEADD ( DimDate[Date], -1, YEAR ) )
+			```
+		lineageTag: 2bcd35cf-51eb-44c1-b568-40a4ab51bbd7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Revenue = ```
+			
+			    SUM ( FactSales[SalesAmount] )
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 633e41bd-73ad-4d95-94fc-1dc0f307c28b
+
+	measure 'Gross Profit YTD' = ```
+			
+			    TOTALYTD ( [Gross Profit], DimDate[Date] )
+			```
+		lineageTag: 058ba47f-09ac-408d-a221-03e77c5927af
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Profit MTD' = ```
+			
+			    TOTALMTD ( [Gross Profit], DimDate[Date] )
+			```
+		lineageTag: 6509c65f-9490-44dc-bcf9-4a2350553047
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Profit LY' = ```
+			
+			    CALCULATE ( [Gross Profit], DATEADD ( DimDate[Date], -1, YEAR ) )
+			```
+		lineageTag: 9c091c36-018b-4751-afb6-62ee5c09d535
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Profit' = ```
+			
+			    [Revenue] - [COGS]
+			```
+		lineageTag: bd214fa6-fa59-4805-af33-fc04046592e3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Discount Amount' = ```
+			
+			    SUM ( FactSales[DiscountAmount] )
+			```
+		lineageTag: 82e77370-7f59-401b-a051-1a326beba580
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure COGS = ```
+			
+			    SUM ( FactSales[CostAmount] )
+			```
+		lineageTag: 3cd39632-f7f5-4052-a7f7-207e6bb59c9d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure ASP = ```
+			
+			    DIVIDE ( [Revenue], [Units] )
+			```
+		lineageTag: 17bf076d-2ff9-4414-b876-74259812e350
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue CY vs Revenue LY %' =
+			
+			VAR Result = DIVIDE ( [Revenue] - [Revenue LY], [Revenue LY] )
+			RETURN
+			    IF (
+			        Result > 0,
+			        "▲ " & FORMAT ( Result, "0.0%" ),
+			        IF (
+			            Result < 0,
+			            "▼ " & FORMAT ( Result, "0.0%" ),
+			            FORMAT ( Result, "0.0%" )
+			        )
+			    )
+		lineageTag: 605c3518-3178-4b84-ac96-c0beff2b7e5b
+
+	measure 'Units LY' = ```
+			
+			    CALCULATE ( [Units], DATEADD ( DimDate[Date], -1, YEAR ) )
+			```
+		formatString: 0
+		lineageTag: 023e313a-5422-4e13-becc-22791e9bf32b
+
+	measure 'Units CY vs Units LY %' =
+			
+			VAR Result = DIVIDE ( [Units] - [Units LY], [Units LY] )
+			RETURN
+			    IF (
+			        Result > 0,
+			        "▲ " & FORMAT ( Result, "0.0%" ),
+			        IF (
+			            Result < 0,
+			            "▼ " & FORMAT ( Result, "0.0%" ),
+			            FORMAT ( Result, "0.0%" )
+			        )
+			    )
+		lineageTag: 697be4da-6561-4bbc-b531-f0b5f6a390be
+
+	column Column1
+		dataType: string
+		lineageTag: 7dc9ef9d-2710-48ca-a569-e0470d53058d
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

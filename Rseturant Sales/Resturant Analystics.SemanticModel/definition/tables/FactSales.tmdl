@@ -1,0 +1,124 @@
+table FactSales
+	lineageTag: 4dc6afa6-ea33-484d-81b8-a6322a1759d9
+
+	measure 'Total Sales' = ```
+			
+			    SUM ( 'FactSales'[SalesAmount] )
+			```
+		formatString: 0
+		lineageTag: 4c52c846-0d5e-4901-b2f8-1e63995afb2b
+
+	measure 'Total Quantity' = ```
+			
+			    SUM ( 'FactSales'[Quantity] )
+			```
+		formatString: 0
+		lineageTag: bddcd8e9-d335-4898-9327-1ae5a5485a86
+
+	measure Transactions = ```
+			
+			    COUNTROWS ( 'FactSales' )
+			```
+		formatString: 0
+		lineageTag: ce78bf65-cb2b-488e-91da-11b100355e5d
+
+	measure 'Sales YTD' = ```
+			
+			    TOTALYTD ( [Total Sales], 'DimDate'[Date] )
+			```
+		lineageTag: fd5755d1-d9e0-4416-841e-0fd8b802fa73
+
+	measure 'Sales PY' = ```
+			
+			    CALCULATE ( [Total Sales], DATEADD ( 'DimDate'[Date], -1, YEAR ) )
+			```
+		lineageTag: 4bb84cca-e5fc-4683-bda4-3629a6b04fa9
+
+	measure 'Sales YTD PY' = ```
+			
+			    CALCULATE ( [Sales YTD], SAMEPERIODLASTYEAR ( 'DimDate'[Date] ) )
+			```
+		lineageTag: d7c662ea-d8ad-42be-8f43-1ed58b8bb051
+
+	measure 'Sales (All Categories)' = ```
+			
+			    CALCULATE ( [Total Sales], REMOVEFILTERS ( 'FactSales'[Category] ) )
+			```
+		formatString: 0
+		lineageTag: 67f06c31-55cb-4ff6-966d-c12cc31e97c9
+
+	measure 'Sales (All Locations)' = ```
+			
+			    CALCULATE ( [Total Sales], REMOVEFILTERS ( 'FactSales'[Location] ) )
+			```
+		formatString: 0
+		lineageTag: 1763bf35-eb0c-4c33-9d7b-447a5893b591
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 55bb7fc1-7e06-4eab-b58f-0d4efd7f9472
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Category
+		dataType: string
+		lineageTag: 88113325-5b84-40b8-9c79-9cfd26a5e2b7
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column Location
+		dataType: string
+		lineageTag: cb8dfdc0-06f1-4eca-8759-e7272ffc1200
+		summarizeBy: none
+		sourceColumn: Location
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: d5bc19bf-dbd4-4fea-a917-49e80f9cf71c
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPrice
+		dataType: int64
+		formatString: 0
+		lineageTag: a41b446b-a533-43c6-ac1b-03894502981d
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesAmount
+		dataType: int64
+		formatString: 0
+		lineageTag: 72dd233d-1166-4327-bd57-1869b54ddaf1
+		summarizeBy: sum
+		sourceColumn: SalesAmount
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactSales = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Practise Coding Files\powerbi\dashboards\Rseturant Sales\Food_Beverage_Sales_2023_2024.csv"),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Date", type date}, {"Category", type text}, {"Location", type text}, {"Quantity", Int64.Type}, {"UnitPrice", Int64.Type}, {"SalesAmount", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

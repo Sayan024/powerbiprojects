@@ -1,0 +1,131 @@
+// ================= CORE KPIs =================
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Total Sales] =
+    SUM ( 'Food_Beverage_Sales_2023_2024'[SalesAmount] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Total Quantity] =
+    SUM ( 'Food_Beverage_Sales_2023_2024'[Quantity] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Avg Unit Price] =
+    DIVIDE ( [Total Sales], [Total Quantity] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Transactions] =
+    COUNTROWS ( 'Food_Beverage_Sales_2023_2024' )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Average Order Value (AOV)] =
+    DIVIDE ( [Total Sales], [Transactions] )
+
+// ================= TIME INTELLIGENCE =================
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales MTD] =
+    TOTALMTD ( [Total Sales], 'Date'[Date] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales QTD] =
+    TOTALQTD ( [Total Sales], 'Date'[Date] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales YTD] =
+    TOTALYTD ( [Total Sales], 'Date'[Date] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales PY] =
+    CALCULATE ( [Total Sales], DATEADD ( 'Date'[Date], -1, YEAR ) )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales YTD PY] =
+    CALCULATE ( [Sales YTD], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales YoY %] =
+    VAR _py = [Sales PY]
+    RETURN IF ( NOT ISBLANK ( _py ), DIVIDE ( [Total Sales] - _py, _py ) )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales YTD YoY %] =
+    VAR _py = [Sales YTD PY]
+    RETURN IF ( NOT ISBLANK ( _py ), DIVIDE ( [Sales YTD] - _py, _py ) )
+
+// ================= SHARES =================
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales (All Categories)] =
+    CALCULATE ( [Total Sales], REMOVEFILTERS ( 'Food_Beverage_Sales_2023_2024'[Category] ) )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Category Share %] =
+    DIVIDE ( [Total Sales], [Sales (All Categories)] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales (All Locations)] =
+    CALCULATE ( [Total Sales], REMOVEFILTERS ( 'Food_Beverage_Sales_2023_2024'[Location] ) )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Location Share %] =
+    DIVIDE ( [Total Sales], [Sales (All Locations)] )
+
+// ================= SELECTED VALUES =================
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Selected Category] =
+    SELECTEDVALUE ( 'Food_Beverage_Sales_2023_2024'[Category], "All Categories" )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Selected Location] =
+    SELECTEDVALUE ( 'Food_Beverage_Sales_2023_2024'[Location], "All Locations" )
+
+// ================= TOP CALLOUTS =================
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Top Category by Sales] =
+    VAR _t =
+      TOPN (
+        1,
+        SUMMARIZE ( 'Food_Beverage_Sales_2023_2024', 'Food_Beverage_Sales_2023_2024'[Category], "Sales", [Total Sales] ),
+        [Sales], DESC
+      )
+    RETURN MAXX ( _t, 'Food_Beverage_Sales_2023_2024'[Category] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Top Category Sales] =
+    VAR _t =
+      TOPN (
+        1,
+        SUMMARIZE ( 'Food_Beverage_Sales_2023_2024', 'Food_Beverage_Sales_2023_2024'[Category], "Sales", [Total Sales] ),
+        [Sales], DESC
+      )
+    RETURN MAXX ( _t, [Sales] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Top Location by Sales] =
+    VAR _t =
+      TOPN (
+        1,
+        SUMMARIZE ( 'Food_Beverage_Sales_2023_2024', 'Food_Beverage_Sales_2023_2024'[Location], "Sales", [Total Sales] ),
+        [Sales], DESC
+      )
+    RETURN MAXX ( _t, 'Food_Beverage_Sales_2023_2024'[Location] )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Top Location Sales] =
+    VAR _t =
+      TOPN (
+        1,
+        SUMMARIZE ( 'Food_Beverage_Sales_2023_2024', 'Food_Beverage_Sales_2023_2024'[Location], "Sales", [Total Sales] ),
+        [Sales], DESC
+      )
+    RETURN MAXX ( _t, [Sales] )
+
+// ================= ROLLING WINDOWS =================
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales Last 30 Days] =
+    VAR _maxDate = MAX ( 'Date'[Date] )
+    VAR _from    = _maxDate - 29
+    RETURN CALCULATE ( [Total Sales], 'Date'[Date] >= _from, 'Date'[Date] <= _maxDate )
+
+DEFINE
+  MEASURE 'Food_Beverage_Sales_2023_2024'[Sales Rolling 90D] =
+    VAR _end = MAX ( 'Date'[Date] )
+    VAR _start = _end - 89
+    RETURN CALCULATE ( [Total Sales], DATESBETWEEN ( 'Date'[Date], _start, _end ) )

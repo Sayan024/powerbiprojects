@@ -1,0 +1,123 @@
+table DimDate
+	lineageTag: 27d0b842-5b14-4f81-a290-64e307333102
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b48b3b55-8884-4795-9f74-763badbd6ba3
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: 3ec7ebe7-cd30-459b-a5b4-bbe40011fa81
+			defaultHierarchy: LocalDateTable_add5afc5-94bd-4724-8de8-71870b8b5698.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 58b2bcf4-c7a1-4b97-84da-4bc6137c00a8
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = User
+
+	column MonthNo
+		dataType: int64
+		formatString: 0
+		lineageTag: 5c23e088-aa5e-49dc-bd97-f6b67d7b7411
+		summarizeBy: sum
+		sourceColumn: MonthNo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		lineageTag: 7db5c9e6-bc28-4e89-aa93-c5c3373bc2b8
+		summarizeBy: none
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonth
+		dataType: string
+		lineageTag: 176d7da6-de7d-4f0c-aba9-3ca4dea46cdf
+		summarizeBy: none
+		sourceColumn: YearMonth
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: string
+		lineageTag: 1aef117a-c2b4-467e-8c01-736271652bbd
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		dataType: int64
+		formatString: 0
+		lineageTag: bf5a7b13-595b-42d6-90a6-8bd7d92c5ae4
+		summarizeBy: sum
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayName
+		dataType: string
+		lineageTag: 8c186a2c-0b43-4716-8a4b-c872d91746aa
+		summarizeBy: none
+		sourceColumn: DayName
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeekNo
+		dataType: int64
+		formatString: 0
+		lineageTag: d9b58d73-ca3e-4228-a96e-b1c62011ea2b
+		summarizeBy: sum
+		sourceColumn: WeekNo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+				    // Get the min & max date from your Sales table
+				    Source = #"FactSales",
+				    MinDate = Date.StartOfYear(List.Min(Source[Date])),
+				    MaxDate = Date.EndOfYear(List.Max(Source[Date])),
+				
+				    // Generate a continuous list of dates
+				    DateList = List.Dates(
+				        MinDate,
+				        Duration.Days(MaxDate - MinDate) + 1,
+				        #duration(1, 0, 0, 0)
+				    ),
+				
+				    // Convert list to table
+				    DateTable = Table.FromList(DateList, Splitter.SplitByNothing(), {"Date"}, null, ExtraValues.Error),
+				
+				    // Add useful columns
+				    AddYear = Table.AddColumn(DateTable, "Year", each Date.Year([Date]), Int64.Type),
+				    AddMonthNo = Table.AddColumn(AddYear, "MonthNo", each Date.Month([Date]), Int64.Type),
+				    AddMonth = Table.AddColumn(AddMonthNo, "Month", each Date.ToText([Date], "MMM"), type text),
+				    AddYearMonth = Table.AddColumn(AddMonth, "YearMonth", each Date.ToText([Date], "yyyy-MM"), type text),
+				    AddQuarter = Table.AddColumn(AddYearMonth, "Quarter", each "Q" & Number.ToText(Date.QuarterOfYear([Date])), type text),
+				    AddDay = Table.AddColumn(AddQuarter, "Day", each Date.Day([Date]), Int64.Type),
+				    AddDayName = Table.AddColumn(AddDay, "DayName", each Date.ToText([Date], "dddd"), type text),
+				    AddWeekNo = Table.AddColumn(AddDayName, "WeekNo", each Date.WeekOfYear([Date]), Int64.Type),
+				    #"Changed Type" = Table.TransformColumnTypes(AddWeekNo,{{"Date", type date}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
